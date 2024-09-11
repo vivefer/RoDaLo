@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sand Bed Simulation</title>
+    <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <h1>Sensor Data</h1>
+    <p id="flow_rate">Flow Rate: N/A</p>
+    <p id="x_coord">X Coordinate: N/A</p>
+    <p id="y_coord">Y Coordinate: N/A</p>
+    <p id="z_coord">Z Coordinate: N/A</p>
+
+    <h2>3D Sand Bed</h2>
+    <div id="sand_bed_plot" style="width:600px;height:400px;"></div>
+
+    <script>
+        const socket = io.connect('http://127.0.0.1:5000');
+
+        socket.on('sensor_data', function(data) {
+            // Update sensor data
+            document.getElementById('flow_rate').innerText = `Flow Rate: ${data.flow_rate.toFixed(2)} L/min`;
+            document.getElementById('x_coord').innerText = `X Coordinate: ${data.coordinates.x.toFixed(2)}`;
+            document.getElementById('y_coord').innerText = `Y Coordinate: ${data.coordinates.y.toFixed(2)}`;
+            document.getElementById('z_coord').innerText = `Z Coordinate: ${data.coordinates.z.toFixed(2)}`;
+
+            // Update 3D plot
+            Plotly.newPlot('sand_bed_plot', [{
+                x: data.sand_bed.X,
+                y: data.sand_bed.Y,
+                z: data.sand_bed.Z,
+                type: 'surface'
+            }]);
+        });
+    </script>
+</body>
+</html>
