@@ -39,3 +39,4 @@ def on_connect():
 
 if __name__ == '__main__':
     socketio.run(app, host='127.0.0.1', port=5000)
+    '''we need to enter real time raspberry ip address for now, both here and in the index file'''
