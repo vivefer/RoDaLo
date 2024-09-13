@@ -7,9 +7,24 @@ import time
 app = Flask(__name__)
 socketio = SocketIO(app)
 
+# Automatically get Raspberry Pi's local IP address
+def get_local_ip():
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        # Connect to an external IP to get the local IP address
+        s.connect(('8.8.8.8', 80))
+        ip_address = s.getsockname()[0]
+    except Exception:
+        ip_address = '127.0.0.1'  # Fallback to localhost if it fails
+    finally:
+        s.close()
+    return ip_address
+
 @app.route('/')
 def index():
-    return render_template('index.html')
+    local_ip = get_local_ip()  # Get the Pi's local IP address
+    return render_template('index.html', ip_address=local_ip)
+
 
 def generate_data():
     while True:
@@ -38,5 +53,5 @@ def on_connect():
     socketio.start_background_task(generate_data)
 
 if __name__ == '__main__':
-    socketio.run(app, host='127.0.0.1', port=5000)
+    socketio.run(app, host='0.0.0.0', port=5000)
     '''we need to enter real time raspberry ip address for now, both here and in the index file'''
