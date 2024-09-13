@@ -1,5 +1,8 @@
 from flask import Flask, render_template
 from flask_socketio import SocketIO
+import socket
+import tkinter as tk
+from tkinter import messagebox
 import random
 import numpy as np
 import time
@@ -19,6 +22,15 @@ def get_local_ip():
     finally:
         s.close()
     return ip_address
+# Function to show a dialog box with the IP address
+def show_ip_dialog(ip_address):
+    # Create a Tkinter root window and hide it (we only want the dialog)
+    root = tk.Tk()
+    root.withdraw()  # Hide the main Tkinter window
+    
+    # Show the messagebox with the IP address and connection info
+    message = f"Connect to {ip_address}:5000 to view the page."
+    messagebox.showinfo("Web Server Info", message)
 
 @app.route('/')
 def index():
@@ -53,5 +65,11 @@ def on_connect():
     socketio.start_background_task(generate_data)
 
 if __name__ == '__main__':
+     # Get the Raspberry Pi's IP address
+    local_ip = get_local_ip()
+
+    # Show the IP address dialog box on the Raspberry Pi
+    show_ip_dialog(local_ip)
+
+    # Run Flask-SocketIO with the Pi's IP address
     socketio.run(app, host='0.0.0.0', port=5000)
-    '''we need to enter real time raspberry ip address for now, both here and in the index file'''
