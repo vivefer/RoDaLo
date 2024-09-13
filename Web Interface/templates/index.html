@@ -18,7 +18,17 @@
     <div id="sand_bed_plot" style="width:600px;height:400px;"></div>
 
     <script>
-        const socket = io.connect('http://127.0.0.1:5000');
+        // The Flask server passes the Pi's IP address dynamically
+        const ip_address = "{{ ip_address }}";  // Accessing the passed IP address
+        const socket = io.connect('http://' + ip_address + ':5000');  // Use Pi's IP address for WebSocket connection
+
+        socket.on('connect', function() {
+            console.log('Connected to WebSocket server at ' + ip_address);
+        });
+
+        socket.on('sensor_data', function(data) {
+            console.log('Sensor Data:', data);
+        });
 
         socket.on('sensor_data', function(data) {
             // Update sensor data
