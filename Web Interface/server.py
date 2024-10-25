@@ -8,7 +8,7 @@ import numpy as np
 import time
 
 app = Flask(__name__)
-socketio = SocketIO(app)
+socketio = SocketIO(app, cors_allowed_origins="*", async_mode = "threading")
 
 # Automatically get Raspberry Pi's local IP address
 def get_local_ip():
