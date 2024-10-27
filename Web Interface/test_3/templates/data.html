@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sensor Data</title>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <div style="display: flex; justify-content: space-around; padding: 10px; background-color: #f0f0f0;">
+        <button onclick="window.location.href='/'">Home</button>
+        <button onclick="window.location.href='/data'">View Sensor Data</button>
+        <button onclick="window.location.href='/plot'">View Real-Time Plot</button>
+    </div>
+
+    <h1>Sensor Data</h1>
+    <div>
+        <p><strong>Gantry Dimensions:</strong> X: {{ dimensions['x'] }} mm, Y: {{ dimensions['y'] }} mm, Z: {{ dimensions['z'] }} mm</p>
+        <p><strong>Data Steps:</strong> X Step: {{ steps['x_step'] }} mm, Y Step: {{ steps['y_step'] }} mm</p>
+    </div>
+    <button onclick="fetchData()">Fetch Data</button>
+    <div id="data-output"></div>
+
+    <script>
+        function fetchData() {
+            fetch('/get-data').then(response => response.json()).then(data => {
+                document.getElementById('data-output').innerHTML = `
+                    <p>Ultrasonic Data: ${data.ultrasonic} mm (${data.data_source.ultrasonic})</p>
+                    <p>Lidar Data: ${data.lidar} mm (${data.data_source.lidar})</p>
+                    <p>Z-Axis Height: ${data.z_axis_height} mm</p>
+                `;
+            });
+        }
+    </script>
+</body>
+</html>
